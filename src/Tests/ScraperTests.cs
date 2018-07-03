@@ -3,25 +3,26 @@ using System.Diagnostics;
 using System.Linq;
 using DocsScraper;
 using DocsScraper.ZohoKb;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace Tests
 {
-    [TestClass]
+    [TestFixture]
     public class ScraperTests
     {
         private const string KbUrl = "https://deskportal.zoho.com/portal/engineerica/kb/tags/accudemia";
         private const string ArticleUrl = "https://deskportal.zoho.com/portal/engineerica/kb/articles/what-do-i-do-if-the-accudemia-website-will-not-load";
-        private readonly Scraper _scraper;
-        private readonly MockSiteRequester _requester;
+        private Scraper _scraper;
+        private MockSiteRequester _requester;
 
-        public ScraperTests()
+        [SetUp]
+        public void Setup()
         {
             _requester = new MockSiteRequester();
             _scraper = new Scraper(KbUrl, new ZohoArticleLoader(), _requester);
         }
 
-        [TestMethod]
+        [Test]
         public void TestLoadLinks()
         {
             var articles = _scraper.GetArticles();
@@ -31,7 +32,7 @@ namespace Tests
             Assert.AreEqual(ArticleUrl, articles[0].Url);
         }
 
-        [TestMethod]
+        [Test]
         public void TestLoadArticle()
         {
             var article = _scraper.CreateArticle("Title", ArticleUrl);
@@ -44,7 +45,7 @@ namespace Tests
             Assert.IsTrue(article.Loaded);
         }
 
-        [TestMethod]
+        [Test]
         public void TestLoadsArticlesInParallel()
         {
             _requester.DefaultArticleResource = "Tests.HtmlResults.article.html";
@@ -64,8 +65,8 @@ namespace Tests
             Console.WriteLine($"Expected complete in {expectedTime}ms ({expectedTime*.9}-{expectedTime * 1.1}). Completed in {watch.ElapsedMilliseconds}ms.");
 
             Assert.AreEqual(5, Scraper.MaxParalelism, "Parallelism not enabled by default");
-            Assert.IsTrue(watch.ElapsedMilliseconds > expectedTime*.9, "Too much parallelism");
-            Assert.IsTrue(watch.ElapsedMilliseconds < expectedTime*1.1, "Too little parallelism");
+            Assert.GreaterOrEqual(watch.ElapsedMilliseconds, expectedTime*.9, "Too much parallelism");
+            Assert.LessOrEqual(watch.ElapsedMilliseconds, expectedTime*1.1, "Too little parallelism");
 
         }
     }
