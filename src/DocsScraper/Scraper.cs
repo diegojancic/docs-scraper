@@ -12,6 +12,10 @@ namespace DocsScraper
     {
         protected internal virtual string Url { get; set; }
         protected internal ArticleLoader ArticleLoader { get; set; }
+
+        /// <summary>
+        /// Max parallelism used in <see cref="PreloadAllArticles"/>.
+        /// </summary>
         public const int MaxParalelism = 5;
 
         private readonly ISiteRequester _requester;
@@ -29,6 +33,10 @@ namespace DocsScraper
             _requester = requester ?? new HttpSiteRequester();
         }
 
+        /// <summary>
+        /// Lists the articles available (including title and link) from the site.
+        /// </summary>
+        /// <returns></returns>
         public IList<Article> GetArticles()
         {
             CheckArticleLoader();
@@ -50,6 +58,10 @@ namespace DocsScraper
             return articles;
         }
 
+        /// <summary>
+        /// Preloads the articles in parallel (see <see cref="MaxParalelism"/>) for future usage.
+        /// </summary>
+        /// <param name="articles">List of articles to preload.</param>
         public void PreloadAllArticles(IList<Article> articles)
         {
             Parallel.ForEach(articles,
@@ -65,6 +77,12 @@ namespace DocsScraper
             }
         }
 
+        /// <summary>
+        /// Creates an article reference, with title and url.
+        /// </summary>
+        /// <param name="title">Title of the article.</param>
+        /// <param name="url">Url of the article.</param>
+        /// <returns>A new article instance.</returns>
         public Article CreateArticle(string title, string url)
         {
             CheckArticleLoader();
@@ -72,6 +90,12 @@ namespace DocsScraper
             return new Article(this, ArticleLoader) {Title = title, Url = url};
         }
 
+        /// <summary>
+        /// Returns the absolute URL of a link.
+        /// </summary>
+        /// <param name="baseUrl">Another URL that includes at least protocol and domain.</param>
+        /// <param name="url">The relative (or full) URL.</param>
+        /// <returns></returns>
         public static string GetAbsoluteUrl(string baseUrl, string url)
         {
             // Get absolute URL

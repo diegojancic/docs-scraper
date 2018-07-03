@@ -4,6 +4,9 @@ using HtmlAgilityPack;
 
 namespace DocsScraper.ZohoKb
 {
+    /// <summary>
+    /// Parses and loads the articles from the Zoho KB.
+    /// </summary>
     public class ZohoArticleLoader : ArticleLoader
     {
         public override IEnumerable<ArticleLink> GetLinks(HtmlDocument doc)
