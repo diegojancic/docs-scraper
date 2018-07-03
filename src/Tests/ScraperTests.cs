@@ -39,8 +39,8 @@ namespace Tests
             Assert.IsNotNull(article);
             Assert.IsFalse(article.Loaded);
 
-            Assert.IsTrue(article.GetBodyHtml().StartsWith("<div>           In Accudemia this may happen if your network connection"), "HTML not loaded correctly");
-            Assert.IsTrue(article.GetBodyText().StartsWith("In Accudemia this may happen if your network connection"), "Text body not loaded correctly");
+            Assert.IsTrue(article.BodyHtml.StartsWith("<div>           In Accudemia this may happen if your network connection"), "HTML not loaded correctly");
+            Assert.IsTrue(article.BodyText.StartsWith("In Accudemia this may happen if your network connection"), "Text body not loaded correctly");
             Assert.IsTrue(article.Loaded);
         }
 

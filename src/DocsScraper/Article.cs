@@ -22,16 +22,22 @@ namespace DocsScraper
 
         public bool Loaded => _htmlDocument != null;
 
-        public string GetBodyHtml()
+        public string BodyHtml
         {
-            if (!Loaded) LoadArticle();
-            return _articleLoader.GetBodyHtml(_htmlDocument);
+            get
+            {
+                if (!Loaded) LoadArticle();
+                return _articleLoader.GetBodyHtml(_htmlDocument);
+            }
         }
 
-        public string GetBodyText()
+        public string BodyText
         {
-            if (!Loaded) LoadArticle();
-            return _articleLoader.GetBodyText(_htmlDocument).Trim();
+            get
+            {
+                if (!Loaded) LoadArticle();
+                return _articleLoader.GetBodyText(_htmlDocument).Trim();
+            }
         }
 
         [MethodImpl(MethodImplOptions.Synchronized)]
