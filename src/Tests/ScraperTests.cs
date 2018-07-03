@@ -59,7 +59,8 @@ namespace Tests
             Assert.IsTrue(articles.All(a => a.Loaded), "Not all articles were loaded");
 
             // Check parallelism
-            Assert.AreEqual(Scraper.MaxParalelism, MockSiteRequester.MaxParallelRequests, "Parallelism not working");
+            Assert.Greater(MockSiteRequester.MaxParallelRequests, 1, "Parallelism too low");
+            Assert.LessOrEqual(MockSiteRequester.MaxParallelRequests, Scraper.MaxParalelism, "Parallelism too high");
         }
     }
 }
