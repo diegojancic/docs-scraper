@@ -45,5 +45,10 @@ namespace DocsScraper
         {
             return $"{Title} ({Url})";
         }
+
+        internal void Preload()
+        {
+            if (!Loaded) LoadArticle();
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using HtmlAgilityPack;
 
 namespace DocsScraper
@@ -9,9 +10,9 @@ namespace DocsScraper
     /// </summary>
     public class Scraper
     {
-        public virtual string Url { get; set; }
-        public virtual string XpathArticleLinks { get; set; }
-        public ArticleLoader ArticleLoader { get; set; }
+        protected internal virtual string Url { get; set; }
+        protected internal ArticleLoader ArticleLoader { get; set; }
+        public const int MaxParalelism = 5;
 
         private readonly ISiteRequester _requester;
 
@@ -21,11 +22,11 @@ namespace DocsScraper
         /// <param name="url">URL of the Zoho KB that contains a list of articles</param>
         /// <param name="requester">Class used to perform the HTTP requests.</param>
         /// <param name="articleLoader">Class responsible for parsing the HTML of the site</param>
-        public Scraper(string url, ISiteRequester requester, ArticleLoader articleLoader)
+        public Scraper(string url, ArticleLoader articleLoader, ISiteRequester requester = null)
         {
             Url = url;
             ArticleLoader = articleLoader;
-            _requester = requester;
+            _requester = requester ?? new HttpSiteRequester();
         }
 
         public IList<Article> GetArticles()
@@ -47,6 +48,13 @@ namespace DocsScraper
             }
 
             return articles;
+        }
+
+        public void PreloadAllArticles(IList<Article> articles)
+        {
+            Parallel.ForEach(articles,
+                new ParallelOptions {MaxDegreeOfParallelism = MaxParalelism},
+                a => a.Preload());
         }
 
         private void CheckArticleLoader()
@@ -77,7 +85,7 @@ namespace DocsScraper
             return url;
         }
 
-        public HtmlDocument LoadArticle(string url)
+        internal HtmlDocument LoadArticle(string url)
         {
             var html = _requester.GetHtml(url);
             var doc = new HtmlDocument();

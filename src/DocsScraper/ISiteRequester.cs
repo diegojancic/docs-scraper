@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace DocsScraper
 {
+    /// <summary>
+    /// Loads information from the endpoint (ie, HTTP). This class must be thread safe
+    /// </summary>
     public interface ISiteRequester
     {
         string GetHtml(string url);

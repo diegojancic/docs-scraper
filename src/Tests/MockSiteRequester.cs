@@ -16,6 +16,7 @@ namespace Tests
         };
 
         public TimeSpan? RequestDelay { get; set; }
+        public string DefaultArticleResource;
 
         public string GetHtml(string url)
         {
@@ -24,10 +25,11 @@ namespace Tests
                 Thread.Sleep(RequestDelay.Value);
             }
 
+            string file;
+            if (urls.ContainsKey(url)) file = urls[url];
+            else if (DefaultArticleResource != null) file = DefaultArticleResource;
+            else throw new FileNotFoundException("Cannot request URL: " + url);
 
-            if (!urls.ContainsKey(url)) throw new FileNotFoundException("Cannot request URL: " + url);
-
-            var file = urls[url];
             return LoadResource(file);
         }
 
