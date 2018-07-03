@@ -1,8 +1,7 @@
 language: csharp
-solution: src/DocsScraper.sln
-before_install:
-  - sudo apt-get install nunit-console
-before_script:
-  - nuget restore src/DocsScraper.sln
-after_script:
-  - nunit-console src/Tests/bin/Release/Tests.dll
+install:
+  - nuget restore ./src/DocsScraper.sln
+  - nuget install NUnit.Runners -Version 2.6.4 -OutputDirectory testrunner
+script:
+  - xbuild /p:Configuration=Release ./src/DocsScraper.sln
+  - mono ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe ./src/Tests/bin/Release/Tests.dll
