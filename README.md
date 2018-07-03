@@ -11,7 +11,7 @@ Example Usage
 -------------
 
 To load the articles, do the following:
-```
+```cs
 var url = "https://deskportal.zoho.com/portal/engineerica/kb/tags/accudemia";
 var scraper = new Scraper(url, new ZohoArticleLoader();
 
@@ -25,7 +25,7 @@ scraper.PreloadAllArticles(articles);
 
 Then, get the information for each article. For example:
 
-```
+```cs
 articles[0].Title
 articles[0].Url
 articles[0].BodyHtml
