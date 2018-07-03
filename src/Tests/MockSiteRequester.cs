@@ -16,21 +16,42 @@ namespace Tests
         };
 
         public TimeSpan? RequestDelay { get; set; }
+        public static int CurrentParallelRequests;
+        public static int MaxParallelRequests;
+        private static readonly object _syncLock = new object();
+
         public string DefaultArticleResource;
 
         public string GetHtml(string url)
         {
-            if (RequestDelay != null)
+            try
             {
-                Thread.Sleep(RequestDelay.Value);
+                Interlocked.Increment(ref CurrentParallelRequests);
+                if (RequestDelay != null)
+                {
+                    Thread.Sleep(RequestDelay.Value);
+                }
+
+                string file;
+                if (urls.ContainsKey(url)) file = urls[url];
+                else if (DefaultArticleResource != null)
+                    file = DefaultArticleResource;
+                else
+                    throw new FileNotFoundException("Cannot request URL: " + url);
+
+                return LoadResource(file);
             }
-
-            string file;
-            if (urls.ContainsKey(url)) file = urls[url];
-            else if (DefaultArticleResource != null) file = DefaultArticleResource;
-            else throw new FileNotFoundException("Cannot request URL: " + url);
-
-            return LoadResource(file);
+            finally
+            {
+                lock (_syncLock)
+                {
+                    if (CurrentParallelRequests > MaxParallelRequests)
+                    {
+                        MaxParallelRequests = CurrentParallelRequests;
+                    }
+                }
+                Interlocked.Decrement(ref CurrentParallelRequests);
+            }
         }
 
         private static string LoadResource(string resourceName)

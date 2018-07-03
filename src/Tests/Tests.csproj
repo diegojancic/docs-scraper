@@ -50,9 +50,6 @@
     <Compile Include="ScraperTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\DocsScraper\DocsScraper.csproj">
       <Project>{11BF21D5-4A32-452F-AFA9-9E095719C045}</Project>
       <Name>DocsScraper</Name>
@@ -63,6 +60,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="HtmlResults\article.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

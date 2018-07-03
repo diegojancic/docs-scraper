@@ -51,23 +51,15 @@ namespace Tests
             _requester.DefaultArticleResource = "Tests.HtmlResults.article.html";
             var articles = _scraper.GetArticles();
 
-            // Measure execution time
-            var watch = Stopwatch.StartNew();
-            _requester.RequestDelay = TimeSpan.FromMilliseconds(500);
+            // Load requests
+            _requester.RequestDelay = TimeSpan.FromMilliseconds(100);
             _scraper.PreloadAllArticles(articles);
-            watch.Stop();
 
             // Check everything was loaded
             Assert.IsTrue(articles.All(a => a.Loaded), "Not all articles were loaded");
 
             // Check parallelism
-            double expectedTime = _requester.RequestDelay.Value.TotalMilliseconds * articles.Count / Scraper.MaxParalelism;
-            Console.WriteLine($"Expected complete in {expectedTime}ms ({expectedTime*.9}-{expectedTime * 1.1}). Completed in {watch.ElapsedMilliseconds}ms.");
-
-            Assert.AreEqual(5, Scraper.MaxParalelism, "Parallelism not enabled by default");
-            Assert.GreaterOrEqual(watch.ElapsedMilliseconds, expectedTime*.9, "Too much parallelism");
-            Assert.LessOrEqual(watch.ElapsedMilliseconds, expectedTime*1.1, "Too little parallelism");
-
+            Assert.AreEqual(Scraper.MaxParalelism, MockSiteRequester.MaxParallelRequests, "Parallelism not working");
         }
     }
 }
