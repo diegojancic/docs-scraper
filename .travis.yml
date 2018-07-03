@@ -4,7 +4,7 @@ install:
   - nuget install NUnit.Runners -Version 3.8 -OutputDirectory testrunner
 script:
   - msbuild /p:Configuration=Release ./src/DocsScraper.sln
-  - mono ./testrunner/NUnit.Runners.3.8/tools/nunit-console.exe ./src/Tests/bin/Release/Tests.dll
+  - mono ./testrunner/NUnit.Runners.3.8.0/tools/nunit-console.exe ./src/Tests/bin/Release/Tests.dll
 branches:
   only:
   - master
