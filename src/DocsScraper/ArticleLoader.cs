@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using HtmlAgilityPack;
 
 namespace DocsScraper
@@ -34,5 +35,12 @@ namespace DocsScraper
             public string Title { get; set; }
             public string Link { get; set; }
         }
+
+        /// <summary>
+        /// Parses an article document and returns the date it was updated.
+        /// </summary>
+        /// <param name="doc">Root HTML document</param>
+        /// <returns></returns>
+        public abstract DateTime? GetUpdatedDate(HtmlDocument doc);
     }
 }

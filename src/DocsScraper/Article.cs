@@ -16,12 +16,21 @@ namespace DocsScraper
             _articleLoader = articleLoader ?? throw new ArgumentNullException(nameof(articleLoader));
         }
 
+        /// <summary>
+        /// Title of the article. Not loaded from the article itself, but from the link.
+        /// </summary>
         public string Title { get; set; }
 
         public string Url { get; set; }
 
+        /// <summary>
+        /// Whether the article information was already loaded.
+        /// </summary>
         public bool Loaded => _htmlDocument != null;
 
+        /// <summary>
+        /// Body of the article as HTML
+        /// </summary>
         public string BodyHtml
         {
             get
@@ -31,12 +40,27 @@ namespace DocsScraper
             }
         }
 
+        /// <summary>
+        /// Body of the article as text.
+        /// </summary>
         public string BodyText
         {
             get
             {
                 if (!Loaded) LoadArticle();
                 return _articleLoader.GetBodyText(_htmlDocument).Trim();
+            }
+        }
+
+        /// <summary>
+        /// Returns the date and time the article was updated. Or null if that information could not be loaded.
+        /// </summary>
+        public DateTime? UpdatedDate
+        {
+            get
+            {
+                if (!Loaded) LoadArticle();
+                return _articleLoader.GetUpdatedDate(_htmlDocument);
             }
         }
 

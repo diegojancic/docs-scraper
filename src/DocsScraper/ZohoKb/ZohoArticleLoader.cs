@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
+using System.Text.RegularExpressions;
 using HtmlAgilityPack;
 
 namespace DocsScraper.ZohoKb
@@ -37,6 +40,24 @@ namespace DocsScraper.ZohoKb
         {
             var body = GetAnswerBody(doc);
             return body.InnerText;
+        }
+
+        private static readonly Regex DateRegex = new Regex(@"(?<date>[0-9]{2}\s[A-Za-z]{3}\s[0-9]{4}\s[0-9]{2}:[0-9]{2}\s[AP]M)",
+            RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Multiline);
+        public override DateTime? GetUpdatedDate(HtmlDocument doc)
+        {
+            try
+            {
+                var text = doc.DocumentNode.SelectSingleNode("//div[starts-with(@class, 'solupdatemsg')]").InnerText;
+                // Format: "Updated: 12 Jun 2018 02:12 PM" but it includes several spaces in the middle
+
+                var match = DateRegex.Match(text);
+                return DateTime.ParseExact(match.Groups["date"].Value, "dd MMM yyyy hh:mm tt", CultureInfo.InvariantCulture);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
         private static HtmlNode GetAnswerBody(HtmlDocument doc)

@@ -46,6 +46,15 @@ namespace Tests
         }
 
         [Test]
+        public void TestLoadUpdatedDate()
+        {
+            var article = _scraper.CreateArticle("Title", ArticleUrl);
+
+            // Article date: 12 Jun 2018 02:12 PM
+            Assert.AreEqual(new DateTime(2018, 6, 12, 14, 12, 00, DateTimeKind.Utc), article.UpdatedDate);
+        }
+
+        [Test]
         public void TestLoadsArticlesInParallel()
         {
             _requester.DefaultArticleResource = "Tests.HtmlResults.article.html";
