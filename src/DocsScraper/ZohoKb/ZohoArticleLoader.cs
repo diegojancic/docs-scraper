@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using HtmlAgilityPack;
@@ -19,13 +20,13 @@ namespace DocsScraper.ZohoKb
             foreach (var node in nodes)
             {
                 string title = node.InnerText.Trim();
-                var linkUrl = new StringBuilder(node.GetAttributeValue("href", null));
-                linkUrl.Replace("&#x2f;", "/");
+                var linkUrl = node.GetAttributeValue("href", null);
+                linkUrl = WebUtility.HtmlDecode(linkUrl);
 
                 yield return new ArticleLink
                 {
-                    Title = title,
-                    Link = linkUrl.ToString()
+                    Title = WebUtility.HtmlDecode(title),
+                    Link = linkUrl
                 };
             }
         }
@@ -39,7 +40,7 @@ namespace DocsScraper.ZohoKb
         public override string GetBodyText(HtmlDocument doc)
         {
             var body = GetAnswerBody(doc);
-            return body.InnerText;
+            return WebUtility.HtmlDecode(body.InnerText);
         }
 
         private static readonly Regex DateRegex = new Regex(@"(?<date>[0-9]{2}\s[A-Za-z]{3}\s[0-9]{4}\s[0-9]{2}:[0-9]{2}\s[AP]M)",

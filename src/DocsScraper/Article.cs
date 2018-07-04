@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Net;
 using System.Runtime.CompilerServices;
 using HtmlAgilityPack;
 
 namespace DocsScraper
 {
+    /// <summary>
+    /// Represents a documentation article, including title, URL, content and publication date.
+    /// </summary>
     public class Article
     {
         private readonly Scraper _scraper;
@@ -48,7 +52,7 @@ namespace DocsScraper
             get
             {
                 if (!Loaded) LoadArticle();
-                return _articleLoader.GetBodyText(_htmlDocument).Trim();
+                return TextFormatter.Format(_articleLoader.GetBodyText(_htmlDocument).Trim());
             }
         }
 

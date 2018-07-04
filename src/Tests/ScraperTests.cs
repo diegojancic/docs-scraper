@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Linq;
 using DocsScraper;
 using DocsScraper.ZohoKb;
@@ -43,6 +42,25 @@ namespace Tests
             Assert.IsTrue(article.BodyHtml.StartsWith("<div>           In Accudemia this may happen if your network connection"), "HTML not loaded correctly");
             Assert.IsTrue(article.BodyText.StartsWith("In Accudemia this may happen if your network connection"), "Text body not loaded correctly");
             Assert.IsTrue(article.Loaded);
+        }
+
+        [Test]
+        public void TestPlainTextIsEscaped()
+        {
+            var articles = _scraper.GetArticles();
+
+            Assert.IsFalse(articles[0].Title.Contains("&nbsp;"));
+            Assert.IsFalse(articles[0].Title.Contains("&amp;"));
+            Assert.IsFalse(articles[0].BodyText.Contains("&amp;"));
+            Assert.IsFalse(articles[0].BodyText.Contains("&nbsp;"));
+        }
+
+        [Test]
+        public void TestPlainTextIsFormattedCorrectly()
+        {
+            var articles = _scraper.GetArticles();
+
+            Assert.IsFalse(articles[0].BodyText.Contains("  "));
         }
 
         [Test]
